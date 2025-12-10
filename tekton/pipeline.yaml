@@ -15,6 +15,8 @@ spec:
     - name: repo-url
     - name: branch
       default: main
+    - name: build-image
+      default: us.icr.io/sn-labs-reeceparry2/accounts:1  
   tasks:
     - name: init
       workspaces:
@@ -67,4 +69,18 @@ spec:
         - name: args
           value: "-v --with-spec --spec-color"
       runAfter:
+        - lint
+
+    - name: build
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+      runAfter:
+        - tests
         - lint
