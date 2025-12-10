@@ -182,6 +182,17 @@ class TestAccountService(TestCase):
         updated_account = resp.get_json()
         self.assertEqual(updated_account["name"], "Something Known")
 
+    def test_delete_account(self):
+        """It should Delete an Account"""
+        account = self._create_accounts(1)[0]
+        resp = self.client.delete(f"{BASE_URL}/{account.id}")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        resp = self.client.delete(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
     ######################################################################
     # LIST ALL ACCOUNTS
     ######################################################################
@@ -219,3 +230,20 @@ class TestAccountService(TestCase):
         account.update()
 
         return account.serialize(), status.HTTP_200_OK
+
+    ######################################################################
+    # DELETE AN ACCOUNT
+    ######################################################################
+    @app.route("/accounts/<int:account_id>", methods=["DELETE"])
+    def delete_accounts(account_id):
+        """
+        Delete an Account
+        This endpoint will delete an Account based on the account_id that is requested
+        """
+        app.logger.info("Request to delete an Account with id: %s", account_id)
+
+        account = Account.find(account_id)
+        if account:
+            account.delete()
+
+        return "", status.HTTP_204_NO_CONTENT
