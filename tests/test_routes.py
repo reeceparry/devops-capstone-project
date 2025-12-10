@@ -12,7 +12,7 @@ from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
-from flask import abort, jsonify, request
+#from flask import abort, jsonify, request
 from service import talisman
 
 
@@ -23,6 +23,7 @@ DATABASE_URI = os.getenv(
 BASE_URL = "/accounts"
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
+
 
 ######################################################################
 #  T E S T   C A S E S
@@ -197,4 +198,3 @@ class TestAccountService(TestCase):
         resp = self.client.delete(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         
-        return "", status.HTTP_204_NO_CONTENT
